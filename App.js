@@ -1,12 +1,18 @@
 import React,{useState} from 'react';
 import { StyleSheet, Text, View,StatusBar,TextInput,Dimensions, ScrollView } from 'react-native';
 import ToDo from "./ToDo"
+import AppLoading from 'expo-app-loading';
+
 const {height,width} =Dimensions.get("window")
 
 export default function App() {
   const [newtodo,setNewtodo]=useState("")
+  const [loadedToDos,setLoadedToDos]=useState(false)
   const controlNewtodo = text =>{
     setNewtodo(text)
+  }
+  if(!loadedToDos){
+    return <AppLoading />
   }
   return (
     <View style={styles.container}>
@@ -23,7 +29,7 @@ export default function App() {
         autoCorrect={false}
         />
         <ScrollView contentContainerStyle={styles.toDos}>
-          <ToDo/>
+          <ToDo text="heloo i'm todo"/>
         </ScrollView>
       </View>
     </View>

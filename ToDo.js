@@ -1,19 +1,24 @@
 import React,{useState} from "react"
-import { View,Text,TouchableOpacity, StyleSheet,Dimensions } from 'react-native'
+import { View,Text,TouchableOpacity, StyleSheet,Dimensions,TextInput } from 'react-native'
 
 const {height,width} = Dimensions.get("window")
 
-export default function ToDo(){
+export default function ToDo(props){
     const [isEditing,setIsediting] =useState(false)
     const [isCompleted,setIscompleted]=useState(false)
+    const [toDoValue,setToDoValue] =useState("")
     const toggleComplete=()=>{
         setIscompleted(!isCompleted)
     }
     const startEditing= ()=>{
         setIsediting(true)
+        setToDoValue(props.text)
     }
     const finishEditing=()=>{
         setIsediting(false)
+    }
+    const controllInput =(text)=>{
+        setToDoValue(text)
     }
     return(
         <View style={styles.container}>
@@ -23,8 +28,23 @@ export default function ToDo(){
                     isCompleted? styles.completedCircle : styles.uncompletedCircle]}
                     />
                 </TouchableOpacity>
-                <Text style={[styles.text,
-                    isCompleted? styles.completedText : styles.uncompletedCircleText]}>Hello I'm todo</Text>
+                {isEditing? 
+                <TextInput 
+                style={[styles.text,styles.input,isCompleted? styles.completedText : styles.uncompletedCircleText]} 
+                value={toDoValue} 
+                multiline={true}
+                onChangeText={controllInput}
+                returnKeyType={"done"}
+                onBlur={finishEditing}
+                />
+                :
+                <Text style={[
+                    styles.text,
+                    isCompleted? styles.completedText : styles.uncompletedCircleText
+                    ]}
+                >
+                    {props.text}
+                </Text>}
             </View>
             
             {isEditing?(
@@ -68,7 +88,8 @@ const styles= StyleSheet.create({
     text:{
         fontWeight:"600",
         fontSize:20,
-        marginVertical:20
+        marginVertical:20,
+        paddingTop:5
     },
     completedText:{
         color:"#bbb",
@@ -95,7 +116,6 @@ const styles= StyleSheet.create({
         flexDirection:"row",
         alignItems:"center",
         width:width/2,
-        justifyContent:"space-between"
     },
     actions:{
         flexDirection:"row"
@@ -103,5 +123,8 @@ const styles= StyleSheet.create({
     actionContainer:{
         marginVertical:10,
         marginHorizontal:10
+    },
+    input:{
+       
     }
 })
