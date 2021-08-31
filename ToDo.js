@@ -1,25 +1,33 @@
 import React,{useState} from "react"
 import { View,Text,TouchableOpacity, StyleSheet,Dimensions,TextInput } from 'react-native'
-
+import PropTypes from "prop-types"
 const {height,width} = Dimensions.get("window")
 
 export default function ToDo(props){
     const [isEditing,setIsediting] =useState(false)
-    const [isCompleted,setIscompleted]=useState(false)
     const [toDoValue,setToDoValue] =useState("")
+    const {text, id, deleteToDo, isCompleted}= props
     const toggleComplete=()=>{
-        setIscompleted(!isCompleted)
+        const {isCompleted, uncompleteToDo,completeToDo,id}=props
+        if(isCompleted){
+            uncompleteToDo(id)
+        }else {
+            completeToDo(id)
+        }
     }
     const startEditing= ()=>{
         setIsediting(true)
         setToDoValue(props.text)
     }
     const finishEditing=()=>{
+        const {id, updateToDo}=props
+        updateToDo(id,toDoValue)
         setIsediting(false)
     }
     const controllInput =(text)=>{
         setToDoValue(text)
     }
+    
     return(
         <View style={styles.container}>
             <View style={styles.column}>
@@ -43,7 +51,7 @@ export default function ToDo(props){
                     isCompleted? styles.completedText : styles.uncompletedCircleText
                     ]}
                 >
-                    {props.text}
+                    {text}
                 </Text>}
             </View>
             
@@ -62,7 +70,7 @@ export default function ToDo(props){
                             <Text style={styles.actionText}>✏️</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPressOut={()=>deleteToDo(id)}>
                         <View style={styles.actionContainer}>
                             <Text style={styles.actionText}>❌</Text>
                         </View>
@@ -74,7 +82,15 @@ export default function ToDo(props){
         
     )
 }
-
+ToDo.propTypes ={
+    text:PropTypes.string.isRequired,
+    isCompleted:PropTypes.bool.isRequired,
+    deleteToDo:PropTypes.func.isRequired,
+    id:PropTypes.string.isRequired,
+    completeToDo:PropTypes.func.isRequired,
+    uncompleteToDo:PropTypes.func.isRequired,
+    updateToDo:PropTypes.func.isRequired,
+}
 
 const styles= StyleSheet.create({
     container:{
